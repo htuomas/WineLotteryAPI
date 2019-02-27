@@ -40,11 +40,16 @@ namespace WineLottery.Controllers
             return Ok(participants);
         }
 
-        [HttpPost("{draftId}/{name}")]
-        public ActionResult Participant(string draftId, string name)
+        [HttpPost("Participate")]
+        public ActionResult Participant([FromBody]Participant participant)
         {
-            dbClient.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DbName, draftId),
-                new {Name = name, DraftId = draftId});
+            IEnumerable<Participant> participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, participant.DraftId))
+                .Where(d => participant.UserId == d.UserId);
+            if (participants.Any())
+                return Ok("Already participated.");
+
+            dbClient.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DbName, participant.DraftId),
+                new { participant.DraftId, participant.Name, participant.UserId});
             return Ok();
         }
 
@@ -71,6 +76,7 @@ namespace WineLottery.Controllers
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string UserId { get; set; }
         public string DraftId { get; set; }
     }
 }
