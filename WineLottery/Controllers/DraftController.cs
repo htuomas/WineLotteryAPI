@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+using WineLottery.Models;
 
 namespace WineLottery.Controllers
 {
@@ -88,12 +88,6 @@ namespace WineLottery.Controllers
             return winner.Name;
         }
 
-        private bool CollectionExists(string draftId)
-        {
-            IQueryable<DocumentCollection> draft = dbClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(DbName)).Where(c => c.Id == draftId);
-            return draft.Any();
-        }
-
         [HttpDelete("{draftId}")]
         public ActionResult Delete(string draftId)
         {
@@ -103,16 +97,11 @@ namespace WineLottery.Controllers
             dbClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DbName, draftId)).Wait();
             return Ok();
         }
-    }
 
-    public class Participant
-    {
-        [JsonIgnore]
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string UserId { get; set; }
-        public string DraftId { get; set; }
-        [JsonIgnore]
-        public bool HasWon { get; set; }
+        private bool CollectionExists(string draftId)
+        {
+            IQueryable<DocumentCollection> draft = dbClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(DbName)).Where(c => c.Id == draftId);
+            return draft.Any();
+        }
     }
 }
