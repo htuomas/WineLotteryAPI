@@ -33,6 +33,13 @@ namespace WineLottery.Controllers
             return Ok(draftId);
         }
 
+        [HttpGet("Drafts")]
+        public ActionResult<IEnumerable<string>> Drafts()
+        {
+            var drafts = dbClient.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(DbName)).Select(c => c.Id);
+            return Ok(drafts);
+        }
+        
         [HttpGet("{draftId}/Participants")]
         public ActionResult<IEnumerable<string>> Participants(string draftId)
         {
