@@ -28,7 +28,7 @@ namespace WineLottery.Controllers
         public ActionResult<string> NewDraft()
         {
             var random = new Random();
-            string draftId = "rnd"+ random.Next(9999);
+            string draftId = $"{random.Next(9)}{random.Next(9)}{random.Next(9)}{random.Next(9)}";
             dbClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DbName), new DocumentCollection{ Id = draftId}).Wait();
             return Ok(draftId);
         }
