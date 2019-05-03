@@ -86,11 +86,11 @@ namespace WineLottery.Controllers
             if (!CollectionExists(draftId))
                 return NotFound();
 
-            var participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId));
+            var participants = dbClient.CreateDocumentQuery<Document>(UriFactory.CreateDocumentCollectionUri(DbName, draftId));
             int count = participants.Count();
             var random = new Random();
-            var winner = participants.ToArray()[random.Next(count)];
-            winner.SetPropertyValue("HasWon", true);
+            Participant winner = (dynamic)participants.ToArray()[random.Next(count)];
+            winner.HasWon = true;
             dbClient.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DbName, draftId, winner.Id), winner).Wait();
             return winner.Name;
         }
