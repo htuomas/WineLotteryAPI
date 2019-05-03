@@ -90,8 +90,8 @@ namespace WineLottery.Controllers
             int count = participants.Count();
             var random = new Random();
             var winner = participants.ToArray()[random.Next(count)];
-            winner.HasWon = true;
-            dbClient.UpsertDocumentAsync(UriFactory.CreateDocumentCollectionUri(DbName, draftId), winner).Wait();
+            winner.SetPropertyValue("HasWon", true);
+            dbClient.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DbName, draftId, winner.Id), winner).Wait();
             return winner.Name;
         }
 

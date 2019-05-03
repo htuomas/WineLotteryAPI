@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Azure.Documents;
+using Newtonsoft.Json;
 
 namespace WineLottery.Models
 {
-    public class Participant
+    public class Participant : Document
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public string UserId { get; set; }
         public string DraftId { get; set; }
