@@ -90,7 +90,7 @@ namespace WineLottery.Controllers
                 .Where(p => !p.HasWon);
             int count = participants.Count();
             var random = new Random();
-            Participant winner = (dynamic)participants.ToArray()[random.Next(count)];
+            Participant winner = participants.ToArray()[random.Next(count)];
             winner.HasWon = true;
             dbClient.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DbName, draftId, winner.Id), winner).Wait();
             return winner.Name;
