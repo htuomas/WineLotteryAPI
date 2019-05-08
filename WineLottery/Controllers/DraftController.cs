@@ -86,7 +86,8 @@ namespace WineLottery.Controllers
             if (!CollectionExists(draftId))
                 return NotFound();
 
-            var participants = dbClient.CreateDocumentQuery<Document>(UriFactory.CreateDocumentCollectionUri(DbName, draftId));
+            var participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
+                .Where(p => !p.HasWon);
             int count = participants.Count();
             var random = new Random();
             Participant winner = (dynamic)participants.ToArray()[random.Next(count)];
