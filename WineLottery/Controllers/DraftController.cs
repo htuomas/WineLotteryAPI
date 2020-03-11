@@ -27,6 +27,8 @@ namespace WineLottery.Controllers
         [HttpGet("New")]
         public ActionResult<string> NewDraft()
         {
+            WinebotContainer.Start();
+
             var random = new Random();
             string draftId = $"{random.Next(9)}{random.Next(9)}{random.Next(9)}{random.Next(9)}";
             dbClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(DbName), new DocumentCollection{ Id = draftId}).Wait();
@@ -47,6 +49,7 @@ namespace WineLottery.Controllers
                 return NotFound();
 
             IEnumerable<string> participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
+                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
                 .Where(d => !d.HasWon)
                 .Select(d => d.Name);
             return Ok(participants);
@@ -59,6 +62,7 @@ namespace WineLottery.Controllers
                 return NotFound();
 
             IEnumerable<string> participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
+                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
                 .Where(d => d.HasWon)
                 .Select(d => d.Name);
             return Ok(participants);
@@ -87,6 +91,7 @@ namespace WineLottery.Controllers
                 return NotFound();
 
             var participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
+                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
                 .Where(p => !p.HasWon);
             int count = participants.Count();
             var random = new Random();
@@ -101,6 +106,8 @@ namespace WineLottery.Controllers
         {
             if (!CollectionExists(draftId))
                 return NotFound();
+
+            WinebotContainer.Stop();
 
             dbClient.DeleteDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DbName, draftId)).Wait();
             return Ok();
