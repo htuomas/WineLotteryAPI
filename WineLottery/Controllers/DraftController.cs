@@ -27,7 +27,7 @@ namespace WineLottery.Controllers
         [HttpGet("New")]
         public ActionResult<string> NewDraft()
         {
-            WinebotContainer.Start();
+            WinebotContainer.StartAsync();
 
             var random = new Random();
             string draftId = $"{random.Next(9)}{random.Next(9)}{random.Next(9)}{random.Next(9)}";
