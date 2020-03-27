@@ -90,7 +90,6 @@ namespace WineLottery.Controllers
                 return NotFound();
 
             var participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
-                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
                 .Where(p => !p.HasWon);
             int count = participants.Count();
             var random = new Random();
