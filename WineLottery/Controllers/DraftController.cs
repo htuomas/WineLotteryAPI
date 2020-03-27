@@ -49,7 +49,7 @@ namespace WineLottery.Controllers
                 return NotFound();
 
             IEnumerable<string> participants = dbClient.CreateDocumentQuery<Participant>(UriFactory.CreateDocumentCollectionUri(DbName, draftId))
-                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
+//                .GroupBy(p => p.UserId).Select(g => g.FirstOrDefault())
                 .Where(d => !d.HasWon)
                 .Select(d => d.Name);
             return Ok(participants);
